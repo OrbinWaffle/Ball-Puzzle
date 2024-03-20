@@ -7,6 +7,8 @@ public class EventBus : MonoBehaviour
 {
     public static EventBus instance;
     public UnityEvent OnWin;
+    public UnityEvent OnStartAttempt;
+    public UnityEvent OnStopAttempt;
     void Awake()
     {
         instance = this;

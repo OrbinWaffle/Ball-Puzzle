@@ -19,7 +19,7 @@ public class BallReceptacle : MonoBehaviour
     }
     public void ReceiveBall(Collider collider)
     {
-        Destroy(collider.gameObject);
+        //Destroy(collider.gameObject);
         EventBus.instance.OnWin.Invoke();
         OnBallReceived.Invoke();
     }

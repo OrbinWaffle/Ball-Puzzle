@@ -5,10 +5,12 @@ using UnityEngine;
 public class BallSpawner : MonoBehaviour
 {
     [SerializeField] GameObject ball;
+    private GameObject _ballInstance;
     // Start is called before the first frame update
     void Start()
     {
-        
+        EventBus.instance.OnStartAttempt.AddListener(SpawnBall);
+        EventBus.instance.OnStopAttempt.AddListener(StopAttempt);
     }
 
     // Update is called once per frame
@@ -19,6 +21,10 @@ public class BallSpawner : MonoBehaviour
 
     public void SpawnBall()
     {
-        Instantiate(ball, transform.position, transform.rotation);
+        _ballInstance = Instantiate(ball, transform.position, transform.rotation);
+    }
+    public void StopAttempt()
+    {
+        Destroy(_ballInstance);
     }
 }
