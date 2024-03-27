@@ -10,8 +10,8 @@ public class MovableObject : MonoBehaviour
     private void Start()
     {
         _grabInteractable = GetComponent<XRGrabInteractable>();
-        EventBus.instance.OnStartAttempt.AddListener(AttemptStarted);
-        EventBus.instance.OnStopAttempt.AddListener(AttemptStopped);
+        EventBus.main.OnStartAttempt.AddListener(AttemptStarted);
+        EventBus.main.OnStopAttempt.AddListener(AttemptStopped);
         interact.selectEntered.Invoke(null);
     }
     void AttemptStarted()

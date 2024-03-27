@@ -5,23 +5,20 @@ using UnityEngine.Events;
 
 public class EventBus : MonoBehaviour
 {
-    public static EventBus instance;
+    public static EventBus main;
     public UnityEvent OnWin;
     public UnityEvent OnStartAttempt;
     public UnityEvent OnStopAttempt;
-    void Awake()
+    public void Initialize()
     {
-        instance = this;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (main == null)
+        {
+            main = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
