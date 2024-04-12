@@ -5,14 +5,15 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class MovableObject : MonoBehaviour
 {
-    XRSimpleInteractable interact;
+    //XRSimpleInteractable interact;
     XRGrabInteractable _grabInteractable;
     private void Start()
     {
         _grabInteractable = GetComponent<XRGrabInteractable>();
         EventBus.main.OnStartAttempt.AddListener(AttemptStarted);
         EventBus.main.OnStopAttempt.AddListener(AttemptStopped);
-        interact.selectEntered.Invoke(null);
+        //interact = GetComponent<XRSimpleInteractable>();
+        //interact.selectEntered.Invoke(null);
     }
     void AttemptStarted()
     {
