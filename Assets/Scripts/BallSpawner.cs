@@ -9,8 +9,8 @@ public class BallSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EventBus.instance.OnStartAttempt.AddListener(SpawnBall);
-        EventBus.instance.OnStopAttempt.AddListener(StopAttempt);
+        EventBus.main.OnStartAttempt.AddListener(SpawnBall);
+        EventBus.main.OnStopAttempt.AddListener(StopAttempt);
     }
 
     // Update is called once per frame

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class BallReceptacle : MonoBehaviour
 {
-    public UnityEvent OnBallReceived;
+    public UnityEvent<GameObject> OnBallReceived;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +20,7 @@ public class BallReceptacle : MonoBehaviour
     public void ReceiveBall(Collider collider)
     {
         //Destroy(collider.gameObject);
-        EventBus.instance.OnWin.Invoke();
-        OnBallReceived.Invoke();
+        EventBus.main.OnWin.Invoke();
+        OnBallReceived.Invoke(collider.gameObject);
     }
 }
