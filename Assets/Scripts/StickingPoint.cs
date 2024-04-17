@@ -7,12 +7,11 @@ public class StickingPoint : MonoBehaviour
 {
     [SerializeField] LayerMask layerMask;
     Rigidbody _rigidbody;
-    float radius = 0.01f;
+    float radius = 0.1f;
     List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
-        Attach();
     }
     public void Attach()
     {

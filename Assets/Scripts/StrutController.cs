@@ -3,35 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class StrutController : MonoBehaviour
+public class StrutController : MovableObject
 {
-    List<StickingPoint> attatchedTo;
+    //List<StickingPoint> attatchedTo;
 
     StickingPoint[] stickingPoints;
-    // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         stickingPoints = GetComponentsInChildren<StickingPoint>();
     }
-
-    // Update is called once per frame
-    void Update()
+    protected override void AttemptStarted()
     {
-        
-    }
-    public void AddStickingPoint(StickingPoint point)
-    {
-
-    }
-    public void Attach()
-    {
+        base.AttemptStarted();
         foreach(StickingPoint p in stickingPoints)
         {
             p.Attach();
         }
     }
-    public void Detach()
+    protected override void AttemptStopped()
     {
+        base.AttemptStopped();
         foreach (StickingPoint p in stickingPoints)
         {
             p.Detach();
