@@ -8,6 +8,7 @@ public class StickingPoint : MonoBehaviour
     [SerializeField] LayerMask layerMask;
     Rigidbody _rigidbody;
     float radius = 0.01f;
+    List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
@@ -32,9 +33,18 @@ public class StickingPoint : MonoBehaviour
             }
         }
     }
+    public void Detach()
+    {
+        foreach(ConfigurableJoint j in joints)
+        {
+            Destroy(j);
+        }
+        joints.Clear();
+    }
     void CreateJoint(Rigidbody rb)
     {
         ConfigurableJoint cj = _rigidbody.gameObject.AddComponent<ConfigurableJoint>();
+        joints.Add(cj);
         cj.connectedBody = rb;
         cj.anchor = transform.localPosition;
         cj.xMotion = ConfigurableJointMotion.Locked;
