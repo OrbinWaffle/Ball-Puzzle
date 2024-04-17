@@ -9,9 +9,46 @@ public class StickingPoint : MonoBehaviour
     Rigidbody _rigidbody;
     float radius = 0.1f;
     List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
+    MeshRenderer _meshRenderer;
+    public bool isChecking;
+    bool isInRange;
+    bool wasInRange;
+    Color invalidColor = Color.red;
+    Color validColor = Color.green;
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
+        _meshRenderer = GetComponentInChildren<MeshRenderer>();
+        _meshRenderer.material.color = invalidColor;
+    }
+    private void FixedUpdate()
+    {
+        if(isChecking)
+        {
+            wasInRange = isInRange;
+            isInRange = CheckForAttachPoint();
+
+            if (isInRange && !wasInRange ) { _meshRenderer.material.color = validColor; }
+            if (!isInRange && wasInRange) { _meshRenderer.material.color = invalidColor;  }
+        }
+    }
+    bool CheckForAttachPoint()
+    {
+        Collider[] colliders;
+        colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+        foreach (Collider collider in colliders)
+        {
+            Rigidbody rb = collider.attachedRigidbody;
+            if (rb == _rigidbody)
+            {
+                continue;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        return false;
     }
     public void Attach()
     {
@@ -27,7 +64,6 @@ public class StickingPoint : MonoBehaviour
             Debug.Log(rb);
             if (rb)
             {
-                Debug.Log("HI");
                 CreateJoint(rb);
             }
         }
