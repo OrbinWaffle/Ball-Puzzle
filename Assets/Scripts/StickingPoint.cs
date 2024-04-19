@@ -15,22 +15,33 @@ public class StickingPoint : MonoBehaviour
     bool wasInRange;
     Color invalidColor = Color.red;
     Color validColor = Color.green;
+    float nextCheckTime;
+    float checkInterval = 0.1f;
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
         _meshRenderer = GetComponentInChildren<MeshRenderer>();
         _meshRenderer.material.color = invalidColor;
+        EventBus.main.OnPickup.AddListener(CheckToggle);
     }
     private void FixedUpdate()
     {
-        if(isChecking)
+        if(isChecking && Time.time > nextCheckTime)
         {
+            nextCheckTime = Time.time + checkInterval;
             wasInRange = isInRange;
             isInRange = CheckForAttachPoint();
-
-            if (isInRange && !wasInRange ) { _meshRenderer.material.color = validColor; }
-            if (!isInRange && wasInRange) { _meshRenderer.material.color = invalidColor;  }
+            UpdateColors(isInRange);
         }
+    }
+    void UpdateColors(bool inRange)
+    {
+        if (inRange && !wasInRange) { _meshRenderer.material.color = validColor; }
+        if (!inRange && wasInRange) { _meshRenderer.material.color = invalidColor; }
+    }
+    public void CheckToggle(bool toggle)
+    {
+        isChecking = toggle;
     }
     bool CheckForAttachPoint()
     {
@@ -43,28 +54,39 @@ public class StickingPoint : MonoBehaviour
             {
                 continue;
             }
-            else
+            if (rb)
             {
-                return true;
+                if (rb == _rigidbody)
+                {
+                    continue;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
         return false;
     }
     public void Attach()
     {
+        UpdateColors(CheckForAttachPoint());
         Collider[] colliders;
         colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
         foreach (Collider collider in colliders)
         {
             Rigidbody rb = collider.attachedRigidbody;
-            if (rb == _rigidbody)
-            {
-                continue;
-            }
             Debug.Log(rb);
             if (rb)
             {
-                CreateJoint(rb);
+                if (rb == _rigidbody)
+                {
+                    continue;
+                }
+                else
+                {
+                    CreateJoint(rb);
+                }
             }
         }
     }

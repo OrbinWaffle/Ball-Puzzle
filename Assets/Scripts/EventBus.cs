@@ -9,6 +9,7 @@ public class EventBus : MonoBehaviour
     public UnityEvent OnWin;
     public UnityEvent OnStartAttempt;
     public UnityEvent OnStopAttempt;
+    public UnityEvent <bool> OnPickup;
     public void Initialize()
     {
         if (main == null)

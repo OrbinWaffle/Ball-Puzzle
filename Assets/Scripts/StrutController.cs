@@ -31,16 +31,18 @@ public class StrutController : MovableObject
     }
     public void OnPickedUp()
     {
-        foreach (StickingPoint p in stickingPoints)
+        EventBus.main.OnPickup.Invoke(true);
+        /*foreach (StickingPoint p in stickingPoints)
         {
             p.isChecking = true;
-        }
+        }*/
     }
     public void OnDropped()
     {
-        foreach (StickingPoint p in stickingPoints)
+        EventBus.main.OnPickup.Invoke(false);
+        /*foreach (StickingPoint p in stickingPoints)
         {
             p.isChecking = false;
-        }
+        }*/
     }
 }
