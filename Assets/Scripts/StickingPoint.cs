@@ -7,14 +7,43 @@ public class StickingPoint : MonoBehaviour
 {
     [SerializeField] LayerMask layerMask;
     Rigidbody _rigidbody;
-    float radius = 0.01f;
+    float radius = 0.1f;
     List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
+    MeshRenderer _meshRenderer;
+    public bool isChecking;
+    bool isInRange;
+    bool wasInRange;
+    Color invalidColor = Color.red;
+    Color validColor = Color.green;
+    float nextCheckTime;
+    float checkInterval = 0.1f;
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
-        Attach();
+        _meshRenderer = GetComponentInChildren<MeshRenderer>();
+        _meshRenderer.material.color = invalidColor;
+        EventBus.main.OnPickup.AddListener(CheckToggle);
     }
-    public void Attach()
+    private void FixedUpdate()
+    {
+        if(isChecking && Time.time > nextCheckTime)
+        {
+            nextCheckTime = Time.time + checkInterval;
+            wasInRange = isInRange;
+            isInRange = CheckForAttachPoint();
+            UpdateColors(isInRange);
+        }
+    }
+    void UpdateColors(bool inRange)
+    {
+        if (inRange && !wasInRange) { _meshRenderer.material.color = validColor; }
+        if (!inRange && wasInRange) { _meshRenderer.material.color = invalidColor; }
+    }
+    public void CheckToggle(bool toggle)
+    {
+        isChecking = toggle;
+    }
+    bool CheckForAttachPoint()
     {
         Collider[] colliders;
         colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
@@ -25,11 +54,39 @@ public class StickingPoint : MonoBehaviour
             {
                 continue;
             }
+            if (rb)
+            {
+                if (rb == _rigidbody)
+                {
+                    continue;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public void Attach()
+    {
+        UpdateColors(CheckForAttachPoint());
+        Collider[] colliders;
+        colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+        foreach (Collider collider in colliders)
+        {
+            Rigidbody rb = collider.attachedRigidbody;
             Debug.Log(rb);
             if (rb)
             {
-                Debug.Log("HI");
-                CreateJoint(rb);
+                if (rb == _rigidbody)
+                {
+                    continue;
+                }
+                else
+                {
+                    CreateJoint(rb);
+                }
             }
         }
     }
