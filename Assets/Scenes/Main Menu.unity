@@ -1422,7 +1422,7 @@ MonoBehaviour:
   levels:
   - Main Menu
   - Level1
-  - Level2
+  - LevelBridge
 --- !u!4 &273207535
 Transform:
   m_ObjectHideFlags: 0
