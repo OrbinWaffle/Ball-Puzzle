@@ -35,4 +35,20 @@ public class MovableObject : MonoBehaviour
         transform.position = _orgPos;
         transform.rotation = _orgRot;
     }
+    public void OnPickedUp()
+    {
+        EventBus.main.OnPickup.Invoke(true);
+        /*foreach (StickingPoint p in stickingPoints)
+        {
+            p.isChecking = true;
+        }*/
+    }
+    public void OnDropped()
+    {
+        EventBus.main.OnPickup.Invoke(false);
+        /*foreach (StickingPoint p in stickingPoints)
+        {
+            p.isChecking = false;
+        }*/
+    }
 }

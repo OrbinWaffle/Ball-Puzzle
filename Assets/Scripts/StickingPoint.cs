@@ -6,6 +6,8 @@ using UnityEngine;
 public class StickingPoint : MonoBehaviour
 {
     [SerializeField] LayerMask layerMask;
+    [SerializeField] float breakForce = Mathf.Infinity;
+    [SerializeField] float breakTorque = Mathf.Infinity;
     Rigidbody _rigidbody;
     float radius = 0.1f;
     List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
@@ -110,6 +112,8 @@ public class StickingPoint : MonoBehaviour
         cj.angularXMotion = ConfigurableJointMotion.Limited;
         cj.angularYMotion = ConfigurableJointMotion.Limited;
         cj.angularZMotion = ConfigurableJointMotion.Limited;
+        cj.breakForce = breakForce;
+        cj.breakTorque = breakTorque;
         SoftJointLimit sjl = new SoftJointLimit();
         SoftJointLimitSpring sjls = new SoftJointLimitSpring();
         sjl.limit = 0.01f;
