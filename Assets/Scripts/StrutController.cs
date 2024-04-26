@@ -29,4 +29,11 @@ public class StrutController : MovableObject
             p.Detach();
         }
     }
+    private void OnJointBreak(float breakForce)
+    {
+        foreach (StickingPoint p in stickingPoints)
+        {
+            p.JointBreak(breakForce);
+        }
+    }
 }

@@ -5,26 +5,29 @@ using UnityEngine;
 
 public class StickingPoint : MonoBehaviour
 {
+    [SerializeField] Gradient colorGradient;
     [SerializeField] LayerMask layerMask;
     [SerializeField] float breakForce = Mathf.Infinity;
     [SerializeField] float breakTorque = Mathf.Infinity;
     Rigidbody _rigidbody;
-    float radius = 0.1f;
+    float radius = 0.05f;
     List<ConfigurableJoint> joints = new List<ConfigurableJoint>();
     MeshRenderer _meshRenderer;
     public bool isChecking;
+    bool isAttached;
     bool isInRange;
     bool wasInRange;
-    Color invalidColor = Color.red;
+    Color invalidColor = Color.gray;
     Color validColor = Color.green;
     float nextCheckTime;
     float checkInterval = 0.1f;
+    int currentJoints = 0;
     private void Start()
     {
         _rigidbody = GetComponentInParent<Rigidbody>();
         _meshRenderer = GetComponentInChildren<MeshRenderer>();
         _meshRenderer.material.color = invalidColor;
-        EventBus.main.OnPickup.AddListener(CheckToggle);
+        GameManager.main.OnPickupAny.AddListener(CheckToggle);
     }
     private void FixedUpdate()
     {
@@ -35,11 +38,44 @@ public class StickingPoint : MonoBehaviour
             isInRange = CheckForAttachPoint();
             UpdateColors(isInRange);
         }
+        if (isAttached)
+        {
+            float greatestTorque = 0;
+            float greatestForce = 0;
+            foreach(ConfigurableJoint joint in joints)
+            {
+                if (joint == null) { continue; }
+                if (joint.currentForce.magnitude > greatestForce) { greatestForce = joint.currentForce.magnitude; }
+                if (joint.currentTorque.magnitude > greatestTorque) { greatestTorque = joint.currentTorque.magnitude; }
+            }
+            if(greatestTorque > greatestForce)
+            {
+                _meshRenderer.material.color = colorGradient.Evaluate(greatestTorque / breakTorque);
+            }
+            if (greatestTorque < greatestForce)
+            {
+                _meshRenderer.material.color = colorGradient.Evaluate(greatestForce / breakForce);
+            }
+        }
+    }
+    public void JointBreak(float breakForce)
+    {
+        currentJoints--;
+        if(currentJoints == 0)
+        {
+            isAttached = false;
+            _meshRenderer.material.color = invalidColor;
+        }
     }
     void UpdateColors(bool inRange)
     {
         if (inRange && !wasInRange) { _meshRenderer.material.color = validColor; }
         if (!inRange && wasInRange) { _meshRenderer.material.color = invalidColor; }
+    }
+    void UpdateColorsUnconditonal(bool inRange)
+    {
+        if (inRange) { _meshRenderer.material.color = validColor; }
+        if (!inRange) { _meshRenderer.material.color = invalidColor; }
     }
     public void CheckToggle(bool toggle)
     {
@@ -72,13 +108,14 @@ public class StickingPoint : MonoBehaviour
     }
     public void Attach()
     {
+        isAttached = true;
         UpdateColors(CheckForAttachPoint());
         Collider[] colliders;
         colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
         foreach (Collider collider in colliders)
         {
             Rigidbody rb = collider.attachedRigidbody;
-            Debug.Log(rb);
+            //Debug.Log(rb);
             if (rb)
             {
                 if (rb == _rigidbody)
@@ -88,17 +125,21 @@ public class StickingPoint : MonoBehaviour
                 else
                 {
                     CreateJoint(rb);
+                    currentJoints++;
                 }
             }
         }
     }
     public void Detach()
     {
+        isAttached = false;
         foreach(ConfigurableJoint j in joints)
         {
             Destroy(j);
         }
         joints.Clear();
+        UpdateColorsUnconditonal(isInRange);
+        currentJoints = 0;
     }
     void CreateJoint(Rigidbody rb)
     {
