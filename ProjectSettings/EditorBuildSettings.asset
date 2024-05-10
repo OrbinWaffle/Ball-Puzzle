@@ -14,6 +14,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelBridge.unity
     guid: fc5d2eac74991084c99f0d3e570f5526
+  - enabled: 1
+    path: Assets/Scenes/LevelCombo.unity
+    guid: 23e4dad6897adcd4688190f1e4893577
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: ac9d16f7f68d7cd479dc940149cdc403
+  - enabled: 1
+    path: Assets/Scenes/LevelCannon.unity
+    guid: 140cd93f6b2c8ef45a49f30cab6ced93
+  - enabled: 1
+    path: Assets/Scenes/LevelGolden.unity
+    guid: 30f5fa32e238f7645bccafb1bb7088d3
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: bfa1182bd221b4ca89619141f66f1260, type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: dc5a169419fa04987b057f65238cf3ba, type: 2}

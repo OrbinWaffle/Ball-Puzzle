@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     public EventBus bus;
     [SerializeField] string[] levels;
     int currentLevel;
+    public int currentlyHolding = 0;
+    public UnityEvent<bool> OnPickupAny;
 
     private void Awake()
     {
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EventBus.main.OnPickup.AddListener(Pickup);
 
     }
 
@@ -35,6 +38,25 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
+    }
+    public void Pickup(bool pickedUp)
+    {
+        if (pickedUp)
+        {
+            if(currentlyHolding == 0)
+            {
+                OnPickupAny.Invoke(true);
+            }
+            currentlyHolding++;
+        }
+        if (!pickedUp)
+        {
+            if(currentlyHolding == 1)
+            {
+                OnPickupAny.Invoke(false);
+            }
+            currentlyHolding--;
+        }
     }
     public void StartAttempt()
     {

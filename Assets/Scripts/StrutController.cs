@@ -29,20 +29,11 @@ public class StrutController : MovableObject
             p.Detach();
         }
     }
-    public void OnPickedUp()
+    private void OnJointBreak(float breakForce)
     {
-        EventBus.main.OnPickup.Invoke(true);
-        /*foreach (StickingPoint p in stickingPoints)
+        foreach (StickingPoint p in stickingPoints)
         {
-            p.isChecking = true;
-        }*/
-    }
-    public void OnDropped()
-    {
-        EventBus.main.OnPickup.Invoke(false);
-        /*foreach (StickingPoint p in stickingPoints)
-        {
-            p.isChecking = false;
-        }*/
+            p.JointBreak(breakForce);
+        }
     }
 }
